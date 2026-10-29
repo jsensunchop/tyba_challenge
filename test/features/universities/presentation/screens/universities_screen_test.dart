@@ -1,0 +1,87 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:tyba_universities/core/errors/app_exception.dart';
+import 'package:tyba_universities/features/universities/data/providers.dart';
+import 'package:tyba_universities/features/universities/presentation/screens/universities_screen.dart';
+
+import '../../../../fakes/fake_universities_repository.dart';
+
+Future<void> _pumpScreen(
+  WidgetTester tester,
+  FakeUniversitiesRepository repository,
+) {
+  return tester.pumpWidget(
+    ProviderScope(
+      overrides: [universitiesRepositoryProvider.overrideWithValue(repository)],
+      child: const MaterialApp(home: UniversitiesScreen()),
+    ),
+  );
+}
+
+void main() {
+  testWidgets('shows a loader and then the universities', (tester) async {
+    await _pumpScreen(tester, FakeUniversitiesRepository());
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.text('University 0'), findsOneWidget);
+  });
+
+  testWidgets('shows the error and retries on "Reintentar"', (tester) async {
+    final repository = FakeUniversitiesRepository(
+      error: const AppException('Sin conexión'),
+    );
+    await _pumpScreen(tester, repository);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sin conexión'), findsOneWidget);
+
+    repository.error = null;
+    await tester.tap(find.text('Reintentar'));
+    await tester.pumpAndSettle();
+
+    expect(repository.calls, 2);
+    expect(find.text('University 0'), findsOneWidget);
+  });
+
+  testWidgets('the AppBar button toggles between list and grid',
+      (tester) async {
+    await _pumpScreen(tester, FakeUniversitiesRepository());
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SliverList), findsOneWidget);
+    expect(find.byType(SliverGrid), findsNothing);
+
+    await tester.tap(find.byTooltip('Ver como cuadrícula'));
+    await tester.pump();
+
+    expect(find.byType(SliverGrid), findsOneWidget);
+    expect(find.byType(SliverList), findsNothing);
+
+    await tester.tap(find.byTooltip('Ver como lista'));
+    await tester.pump();
+
+    expect(find.byType(SliverList), findsOneWidget);
+    expect(find.byType(SliverGrid), findsNothing);
+  });
+
+  testWidgets('scrolling to the end loads items beyond the first page',
+      (tester) async {
+    await _pumpScreen(tester, FakeUniversitiesRepository(count: 45));
+    await tester.pumpAndSettle();
+
+    expect(find.text('University 25'), findsNothing);
+
+    await tester.scrollUntilVisible(
+      find.text('No hay más universidades'),
+      500,
+      scrollable: find.byType(Scrollable),
+    );
+
+    expect(find.text('University 44'), findsOneWidget);
+  });
+}
