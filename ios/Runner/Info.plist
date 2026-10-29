@@ -8,6 +8,10 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Tyba Universities</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Usamos la cámara para que tomes una foto de la universidad.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Usamos tu galería para que elijas una imagen de la universidad.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
