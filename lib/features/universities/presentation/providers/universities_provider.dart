@@ -22,8 +22,9 @@ class UniversitiesNotifier extends AsyncNotifier<UniversitiesState> {
 
   @override
   Future<UniversitiesState> build() async {
-    final universities =
-        await ref.watch(universitiesRepositoryProvider).getUniversities();
+    final universities = await ref
+        .watch(universitiesRepositoryProvider)
+        .getUniversities();
     return UniversitiesState(all: universities, visibleCount: pageSize);
   }
 
@@ -44,9 +45,9 @@ class UniversitiesNotifier extends AsyncNotifier<UniversitiesState> {
 
 final universitiesProvider =
     AsyncNotifierProvider<UniversitiesNotifier, UniversitiesState>(
-  UniversitiesNotifier.new,
-  // Riverpod 3 retries failed providers automatically, which would keep the
-  // spinner up for about a minute while offline. The screen offers an
-  // explicit "Reintentar" button instead.
-  retry: (_, _) => null,
-);
+      UniversitiesNotifier.new,
+      // Riverpod 3 retries failed providers automatically, which would keep the
+      // spinner up for about a minute while offline. The screen offers an
+      // explicit "Reintentar" button instead.
+      retry: (_, _) => null,
+    );

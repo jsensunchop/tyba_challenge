@@ -78,8 +78,10 @@ void main() {
   });
 
   test('toEntity copies every field', () {
-    final entity = UniversityModel.fromJson(_json(stateProvince: 'PA'), 3)
-        .toEntity();
+    final entity = UniversityModel.fromJson(
+      _json(stateProvince: 'PA'),
+      3,
+    ).toEntity();
 
     expect(entity.id, 3);
     expect(entity.name, 'Marywood University');
