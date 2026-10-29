@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tyba_universities/core/errors/app_exception.dart';
 import 'package:tyba_universities/features/universities/data/providers.dart';
 import 'package:tyba_universities/features/universities/presentation/screens/universities_screen.dart';
+import 'package:tyba_universities/features/universities/presentation/screens/university_detail_screen.dart';
 
 import '../../../../fakes/fake_universities_repository.dart';
 
@@ -48,8 +49,9 @@ void main() {
     expect(find.text('University 0'), findsOneWidget);
   });
 
-  testWidgets('the AppBar button toggles between list and grid',
-      (tester) async {
+  testWidgets('the AppBar button toggles between list and grid', (
+    tester,
+  ) async {
     await _pumpScreen(tester, FakeUniversitiesRepository());
     await tester.pumpAndSettle();
 
@@ -69,15 +71,27 @@ void main() {
     expect(find.byType(SliverGrid), findsNothing);
   });
 
-  testWidgets('scrolling to the end loads items beyond the first page',
-      (tester) async {
+  testWidgets('tapping an item opens its detail', (tester) async {
+    await _pumpScreen(tester, FakeUniversitiesRepository());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('University 0'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(UniversityDetailScreen), findsOneWidget);
+    expect(find.text('University 0'), findsOneWidget);
+  });
+
+  testWidgets('scrolling to the end loads items beyond the first page', (
+    tester,
+  ) async {
     await _pumpScreen(tester, FakeUniversitiesRepository(count: 45));
     await tester.pumpAndSettle();
 
     expect(find.text('University 25'), findsNothing);
 
     await tester.scrollUntilVisible(
-      find.text('No hay más universidades'),
+      find.text('No hay más items para mostrar'),
       500,
       scrollable: find.byType(Scrollable),
     );
