@@ -9,7 +9,6 @@ import '../../domain/repositories/universities_repository.dart';
 import '../models/university_model.dart';
 
 class UniversitiesRepositoryImpl implements UniversitiesRepository {
-  /// The client is injected so tests can pass a `MockClient`.
   UniversitiesRepositoryImpl(this._client);
 
   final http.Client _client;
@@ -47,8 +46,10 @@ class UniversitiesRepositoryImpl implements UniversitiesRepository {
       final items = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       return [
         for (var i = 0; i < items.length; i++)
-          UniversityModel.fromJson(items[i] as Map<String, dynamic>, i)
-              .toEntity(),
+          UniversityModel.fromJson(
+            items[i] as Map<String, dynamic>,
+            i,
+          ).toEntity(),
       ];
     } catch (_) {
       // Invalid JSON (FormatException) or an unexpected shape (TypeError).
