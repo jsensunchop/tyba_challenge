@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_exception.dart';
+import '../../domain/entities/university.dart';
 import '../providers/universities_provider.dart';
+import '../providers/university_custom_data_provider.dart';
+import 'university_detail_screen.dart';
 import '../widgets/error_view.dart';
 import '../widgets/university_grid_card.dart';
 import '../widgets/university_list_tile.dart';
@@ -58,8 +61,17 @@ class _UniversitiesScreenState extends ConsumerState<UniversitiesScreen> {
     );
   }
 
+  void _openDetail(University university) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => UniversityDetailScreen(university: university),
+      ),
+    );
+  }
+
   Widget _buildScrollView(UniversitiesState state) {
     final visible = state.visible;
+    final customData = ref.watch(universityCustomDataProvider);
 
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
@@ -88,7 +100,8 @@ class _UniversitiesScreenState extends ConsumerState<UniversitiesScreen> {
                   return UniversityGridCard(
                     key: ValueKey(university.id),
                     university: university,
-                    onTap: () {},
+                    imagePath: customData[university.id]?.imagePath,
+                    onTap: () => _openDetail(university),
                   );
                 },
               ),
@@ -101,7 +114,8 @@ class _UniversitiesScreenState extends ConsumerState<UniversitiesScreen> {
                 return UniversityListTile(
                   key: ValueKey(university.id),
                   university: university,
-                  onTap: () {},
+                  imagePath: customData[university.id]?.imagePath,
+                  onTap: () => _openDetail(university),
                 );
               },
             ),

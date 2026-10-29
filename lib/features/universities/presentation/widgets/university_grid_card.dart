@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/university.dart';
+import 'university_image.dart';
 
 class UniversityGridCard extends StatelessWidget {
   const UniversityGridCard({
     super.key,
     required this.university,
+    required this.imagePath,
     required this.onTap,
   });
 
   final University university;
+  final String? imagePath;
   final VoidCallback onTap;
 
   @override
@@ -23,16 +26,7 @@ class UniversityGridCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: ColoredBox(
-                color: theme.colorScheme.surfaceContainerHighest,
-                child: Icon(
-                  Icons.school_outlined,
-                  size: 48,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
+            Expanded(child: UniversityImage(path: imagePath)),
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
