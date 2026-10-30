@@ -54,23 +54,29 @@ class _StudentsFormState extends State<StudentsForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
-            controller: _controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: const InputDecoration(
-              labelText: 'Número de estudiantes',
-              border: OutlineInputBorder(),
+          Expanded(
+            child: TextFormField(
+              controller: _controller,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: const InputDecoration(
+                hintText: 'Ej. 1200',
+                border: OutlineInputBorder(),
+              ),
+              validator: validateStudents,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              onFieldSubmitted: (_) => _save(),
             ),
-            validator: validateStudents,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            onFieldSubmitted: (_) => _save(),
           ),
-          const SizedBox(height: 12),
-          FilledButton(onPressed: _save, child: const Text('Guardar')),
+          const SizedBox(width: 12),
+          FilledButton(
+            onPressed: _save,
+            style: FilledButton.styleFrom(minimumSize: const Size(0, 56)),
+            child: const Text('Guardar'),
+          ),
         ],
       ),
     );
