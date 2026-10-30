@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -25,29 +26,33 @@ UniversitiesRepositoryImpl _repositoryReturning(String body, int status) {
 
 void main() {
   group('UniversitiesRepositoryImpl.getUniversities', () {
-    test('returns entities with ids assigned by position', () async {
-      final body = jsonEncode([_item('A'), _item('B'), _item('C')]);
+    test('returns the parsed universities on a 200 response', () async {
+      final body = jsonEncode([_item('A'), _item('B')]);
 
       final result = await _repositoryReturning(body, 200).getUniversities();
 
-      expect(result.map((u) => u.id), [0, 1, 2]);
-      expect(result.map((u) => u.name), ['A', 'B', 'C']);
-    });
-
-    test('gives distinct ids to items with the same name', () async {
-      final body = jsonEncode([
-        _item('College of DuPage'),
-        _item('College of DuPage'),
-      ]);
-
-      final result = await _repositoryReturning(body, 200).getUniversities();
-
-      expect(result[0].name, result[1].name);
-      expect(result[0].id, isNot(result[1].id));
+      expect(result.map((u) => u.name), ['A', 'B']);
     });
 
     test('throws AppException on a non-200 status', () {
       final repository = _repositoryReturning('Internal error', 500);
+
+      expect(repository.getUniversities(), throwsA(isA<AppException>()));
+    });
+
+    test('throws AppException when the request times out', () {
+      final repository = UniversitiesRepositoryImpl(
+        MockClient((_) => Completer<http.Response>().future),
+        timeout: const Duration(milliseconds: 10),
+      );
+
+      expect(repository.getUniversities(), throwsA(isA<AppException>()));
+    });
+
+    test('throws AppException on a network error', () {
+      final repository = UniversitiesRepositoryImpl(
+        MockClient((_) async => throw http.ClientException('No internet')),
+      );
 
       expect(repository.getUniversities(), throwsA(isA<AppException>()));
     });
@@ -58,10 +63,10 @@ void main() {
       expect(repository.getUniversities(), throwsA(isA<AppException>()));
     });
 
-    test('throws AppException on a network error', () {
-      final repository = UniversitiesRepositoryImpl(
-        MockClient((_) async => throw http.ClientException('No internet')),
-      );
+    test('throws AppException on a malformed field', () {
+      final body = jsonEncode([_item('A')..['name'] = null]);
+
+      final repository = _repositoryReturning(body, 200);
 
       expect(repository.getUniversities(), throwsA(isA<AppException>()));
     });

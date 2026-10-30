@@ -6,17 +6,20 @@ import 'package:http/http.dart' as http;
 import '../../../../core/errors/app_exception.dart';
 import '../../domain/entities/university.dart';
 import '../../domain/repositories/universities_repository.dart';
-import '../models/university_model.dart';
+import '../parsers/universities_parser.dart';
 
 class UniversitiesRepositoryImpl implements UniversitiesRepository {
-  UniversitiesRepositoryImpl(this._client);
+  UniversitiesRepositoryImpl(
+    this._client, {
+    Duration timeout = const Duration(seconds: 15),
+  }) : _timeout = timeout;
 
   final http.Client _client;
+  final Duration _timeout;
 
   static final _url = Uri.parse(
     'https://tyba-assets.s3.amazonaws.com/FE-Engineer-test/universities.json',
   );
-  static const _timeout = Duration(seconds: 15);
 
   @override
   Future<List<University>> getUniversities() async {
@@ -41,18 +44,8 @@ class UniversitiesRepositoryImpl implements UniversitiesRepository {
     }
 
     try {
-      // Decode bytes as UTF-8 explicitly instead of trusting the
-      // Content-Type header to declare the charset.
-      final items = jsonDecode(utf8.decode(response.bodyBytes)) as List;
-      return [
-        for (var i = 0; i < items.length; i++)
-          UniversityModel.fromJson(
-            items[i] as Map<String, dynamic>,
-            i,
-          ).toEntity(),
-      ];
+      return parseUniversities(utf8.decode(response.bodyBytes));
     } catch (_) {
-      // Invalid JSON (FormatException) or an unexpected shape (TypeError).
       throw const AppException(
         'Los datos recibidos no tienen el formato esperado.',
       );
