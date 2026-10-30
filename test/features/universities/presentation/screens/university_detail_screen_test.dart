@@ -80,18 +80,45 @@ void main() {
     testWidgets('shows the error for an invalid value', (tester) async {
       await _pumpDetail(tester);
 
-      await tester.ensureVisible(find.byType(TextFormField));
-      await tester.enterText(find.byType(TextFormField), '0');
+      await tester.ensureVisible(find.byType(TextField));
+      await tester.enterText(find.byType(TextField), '0');
       await tester.pump();
 
       expect(find.text('Debe ser mayor que cero'), findsOneWidget);
+      expect(find.byIcon(Icons.error_outline), findsOneWidget);
+      expect(find.text('Aún no registrado'), findsNothing);
+    });
+
+    testWidgets('fixing an invalid value hides the error', (tester) async {
+      await _pumpDetail(tester);
+
+      await tester.ensureVisible(find.byType(TextField));
+      await tester.enterText(find.byType(TextField), '0');
+      await tester.pump();
+      await tester.enterText(find.byType(TextField), '1500');
+      await tester.pump();
+
+      expect(find.text('Debe ser mayor que cero'), findsNothing);
+      expect(find.byIcon(Icons.error_outline), findsNothing);
+      expect(find.text('Aún no registrado'), findsOneWidget);
+    });
+
+    testWidgets('saving an empty field shows the error', (tester) async {
+      await _pumpDetail(tester);
+
+      await tester.ensureVisible(find.text('Guardar'));
+      await tester.tap(find.text('Guardar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ingresa el número de estudiantes'), findsOneWidget);
+      expect(find.byType(AlertDialog), findsNothing);
     });
 
     testWidgets('saves a valid value into the state', (tester) async {
       final container = await _pumpDetail(tester);
 
       await tester.ensureVisible(find.text('Guardar'));
-      await tester.enterText(find.byType(TextFormField), '1500');
+      await tester.enterText(find.byType(TextField), '1500');
       await tester.tap(find.text('Guardar'));
       await tester.pumpAndSettle();
 
@@ -100,7 +127,13 @@ void main() {
         1500,
       );
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byIcon(Icons.check_circle),
+        ),
+        findsOneWidget,
+      );
       expect(
         find.text('Los cambios se guardaron correctamente.'),
         findsOneWidget,
@@ -112,13 +145,33 @@ void main() {
       expect(find.byType(AlertDialog), findsNothing);
     });
 
+    testWidgets('the helper text shows the last saved value', (tester) async {
+      await _pumpDetail(tester);
+
+      expect(find.text('Aún no registrado'), findsOneWidget);
+      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.check_circle), findsNothing);
+
+      await tester.ensureVisible(find.text('Guardar'));
+      await tester.enterText(find.byType(TextField), '1500');
+      await tester.tap(find.text('Guardar'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Aceptar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Aún no registrado'), findsNothing);
+      expect(find.text('Último valor guardado: 1.500'), findsOneWidget);
+      expect(find.byIcon(Icons.warning_amber_rounded), findsNothing);
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+    });
+
     testWidgets('an invalid value does not show the success dialog', (
       tester,
     ) async {
       await _pumpDetail(tester);
 
       await tester.ensureVisible(find.text('Guardar'));
-      await tester.enterText(find.byType(TextFormField), '0');
+      await tester.enterText(find.byType(TextField), '0');
       await tester.tap(find.text('Guardar'));
       await tester.pumpAndSettle();
 

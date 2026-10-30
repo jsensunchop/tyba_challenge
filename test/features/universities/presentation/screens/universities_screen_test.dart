@@ -5,6 +5,7 @@ import 'package:tyba_universities/core/errors/app_exception.dart';
 import 'package:tyba_universities/features/universities/data/providers.dart';
 import 'package:tyba_universities/features/universities/presentation/screens/universities_screen.dart';
 import 'package:tyba_universities/features/universities/presentation/screens/university_detail_screen.dart';
+import 'package:tyba_universities/features/universities/presentation/widgets/students_badge.dart';
 
 import '../../../../fakes/fake_universities_repository.dart';
 
@@ -88,12 +89,12 @@ void main() {
   ) async {
     await _pumpScreen(tester, FakeUniversitiesRepository());
     await tester.pumpAndSettle();
-    expect(find.text('1.200 estudiantes'), findsNothing);
+    expect(find.byType(StudentsBadge), findsNothing);
 
     await tester.tap(find.text('University 0'));
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Guardar'));
-    await tester.enterText(find.byType(TextFormField), '1200');
+    await tester.enterText(find.byType(TextField), '1200');
     await tester.tap(find.text('Guardar'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Aceptar'));
@@ -103,6 +104,13 @@ void main() {
 
     expect(find.byType(UniversityDetailScreen), findsNothing);
     expect(find.text('1.200 estudiantes'), findsOneWidget);
+    expect(find.byType(StudentsBadge), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Ver como cuadrícula'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('1.200 estudiantes'), findsOneWidget);
+    expect(find.byType(StudentsBadge), findsOneWidget);
   });
 
   testWidgets('scrolling to the end loads items beyond the first page', (
