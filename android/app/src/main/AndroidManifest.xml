@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Debug and profile manifests already declare it for hot reload;
+         release builds need it here to fetch the universities list. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="tyba_universities"
         android:name="${applicationName}"
