@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'core/theme/app_theme.dart';
 import 'features/universities/presentation/screens/universities_screen.dart';
 
 class App extends StatelessWidget {
@@ -10,9 +11,9 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Universidades',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-      ),
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: ThemeMode.dark,
       home: const UniversitiesScreen(),
     );
   }
