@@ -32,6 +32,9 @@ El archivo queda en `build/app/outputs/flutter-apk/app-release.apk`.
 | Número de estudiantes con validaciones | Campo numérico que solo acepta dígitos y valida: obligatorio, entero, mayor que cero y como máximo 1.000.000. |
 | Bono: infinite scroll | De 20 en 20, sin librerías externas. |
 
+Las imágenes y el número de estudiantes se guardan en memoria durante la
+sesión; el enunciado no pide persistirlos entre sesiones.
+
 Extras:
 
 - Tema claro y oscuro con Material 3 (la app arranca en modo oscuro).
@@ -60,7 +63,12 @@ selección de imagen usa archivos locales y la cámara del dispositivo.
 ## Arquitectura
 
 Clean Architecture "light", con la regla de dependencia
-`presentation → domain ← data`:
+`presentation → domain ← data`. Es "light" porque mantiene la separación de
+capas y la regla de dependencia, pero sin casos de uso que solo deleguen al
+repositorio; la lógica de negocio real, la validación del número de
+estudiantes, vive en el dominio como función pura.
+
+Cada capa contiene:
 
 - **domain**: entidades (`University`, `UniversityCustomData`), el contrato
   `UniversitiesRepository` y la validación del número de estudiantes. No
@@ -132,14 +140,6 @@ El estado se maneja con `flutter_riverpod` 3, sin code generation.
   regla de negocio y se prueba sin widgets.
 - **`ImagePickerService` inyectado por provider.** Permite reemplazarlo por un
   fake y probar el detalle sin cámara ni galería.
-
-## Qué dejé fuera a propósito
-
-Casos de uso que solo llaman al repositorio, `Either`/`dartz`, `freezed` y
-code generation, `go_router`, persistencia entre sesiones (el enunciado no la
-pide), `url_launcher`, fallback a JSON local y búsqueda. Para el tamaño del
-problema, cada una agregaba capas o dependencias sin un beneficio claro, y el
-objetivo era un código simple y fácil de explicar.
 
 ## Cambiar a un archivo JSON local
 
