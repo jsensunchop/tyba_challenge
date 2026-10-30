@@ -87,7 +87,7 @@ class UniversityDetailScreen extends ConsumerWidget {
             _Section(
               label: 'Número de estudiantes',
               child: StudentsForm(
-                initialValue: customData?.studentCount,
+                savedValue: customData?.studentCount,
                 onSaved: (count) => ref
                     .read(universityCustomDataProvider.notifier)
                     .setStudentCount(university.id, count),
