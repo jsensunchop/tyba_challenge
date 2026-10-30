@@ -39,7 +39,7 @@ Future<ProviderContainer> _pumpDetail(
 }
 
 Future<void> _pickFromGallery(WidgetTester tester) async {
-  await tester.tap(find.text('Agregar imagen'));
+  await tester.tap(find.byTooltip('Cambiar imagen'));
   await tester.pumpAndSettle();
   await tester.tap(find.text('Galería'));
   await tester.pumpAndSettle();
@@ -53,7 +53,6 @@ void main() {
 
     expect(find.text('Marywood University'), findsOneWidget);
     expect(find.text('United States'), findsOneWidget);
-    expect(find.text('Estado / provincia'), findsNothing);
   });
 
   testWidgets('shows the state-province when present', (tester) async {
@@ -67,8 +66,14 @@ void main() {
     );
     await _pumpDetail(tester, university: university);
 
-    expect(find.text('Estado / provincia'), findsOneWidget);
-    expect(find.text('Pennsylvania'), findsOneWidget);
+    expect(find.text('Pennsylvania, United States'), findsOneWidget);
+  });
+
+  testWidgets('shows domains as chips and web pages', (tester) async {
+    await _pumpDetail(tester);
+
+    expect(find.widgetWithText(Chip, 'marywood.edu'), findsOneWidget);
+    expect(find.text('http://www.marywood.edu'), findsOneWidget);
   });
 
   group('students form', () {
@@ -127,6 +132,7 @@ void main() {
         tester,
         picker: FakeImagePickerService(path: '/images/campus.jpg'),
       );
+      expect(find.byType(Image), findsNothing);
 
       await _pickFromGallery(tester);
 
@@ -134,7 +140,7 @@ void main() {
         container.read(universityCustomDataProvider)[7]?.imagePath,
         '/images/campus.jpg',
       );
-      expect(find.text('Cambiar imagen'), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
     });
 
     testWidgets('cancelling the picker changes nothing', (tester) async {

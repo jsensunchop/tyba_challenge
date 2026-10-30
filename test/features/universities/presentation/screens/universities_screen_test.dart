@@ -30,6 +30,7 @@ void main() {
 
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.text('University 0'), findsOneWidget);
+    expect(find.text('Mostrando 20 de 45'), findsOneWidget);
   });
 
   testWidgets('shows the error and retries on "Reintentar"', (tester) async {
@@ -80,6 +81,28 @@ void main() {
 
     expect(find.byType(UniversityDetailScreen), findsOneWidget);
     expect(find.text('University 0'), findsOneWidget);
+  });
+
+  testWidgets('a student count saved in the detail shows as a badge', (
+    tester,
+  ) async {
+    await _pumpScreen(tester, FakeUniversitiesRepository());
+    await tester.pumpAndSettle();
+    expect(find.text('1.200 estudiantes'), findsNothing);
+
+    await tester.tap(find.text('University 0'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Guardar'));
+    await tester.enterText(find.byType(TextFormField), '1200');
+    await tester.tap(find.text('Guardar'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Aceptar'));
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(UniversityDetailScreen), findsNothing);
+    expect(find.text('1.200 estudiantes'), findsOneWidget);
   });
 
   testWidgets('scrolling to the end loads items beyond the first page', (
