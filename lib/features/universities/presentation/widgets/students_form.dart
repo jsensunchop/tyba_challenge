@@ -45,7 +45,11 @@ class _StudentsFormState extends State<StudentsForm> {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        icon: const Icon(Icons.check_circle, color: Colors.green, size: 48),
+        icon: Icon(
+          Icons.check_circle,
+          color: Theme.of(context).colorScheme.primary,
+          size: 48,
+        ),
         title: const Text('¡Listo!'),
         content: const Text('Los cambios se guardaron correctamente.'),
         actions: [
