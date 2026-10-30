@@ -2,8 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/university_custom_data.dart';
 
-/// User edits indexed by `University.id`. Separate from the universities
-/// provider on purpose: reloading the list must not wipe what the user edited.
 class UniversityCustomDataNotifier
     extends Notifier<Map<int, UniversityCustomData>> {
   @override
@@ -22,7 +20,6 @@ class UniversityCustomDataNotifier
     UniversityCustomData Function(UniversityCustomData data) change,
   ) {
     final current = state[id] ?? const UniversityCustomData();
-    // A new map, so listeners see a new state instead of a mutated one.
     state = {...state, id: change(current)};
   }
 }

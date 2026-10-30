@@ -8,8 +8,6 @@ class University {
     required this.webPages,
   });
 
-  /// Position of the item in the source list. The API has no id, and neither
-  /// `name` nor `domains` is unique, so the index is the only stable key.
   final int id;
   final String name;
   final String country;

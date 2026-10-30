@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-/// Fills its parent with the assigned image, or a placeholder when there is
-/// none. The parent decides the size and shape.
 class UniversityImage extends StatelessWidget {
   const UniversityImage({super.key, required this.path, this.iconSize = 48});
 
@@ -18,7 +16,6 @@ class UniversityImage extends StatelessWidget {
     return Image.file(
       File(path),
       fit: BoxFit.cover,
-      // The file lives in a temp folder the OS may clean up.
       errorBuilder: (context, _, _) => _placeholder(context),
     );
   }

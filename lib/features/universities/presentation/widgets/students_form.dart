@@ -60,8 +60,6 @@ class _StudentsFormState extends State<StudentsForm> {
           TextFormField(
             controller: _controller,
             keyboardType: TextInputType.number,
-            // Blocks non-digits while typing; validateStudents still runs as
-            // a second layer (e.g. for pasted text or out-of-range values).
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: const InputDecoration(
               labelText: 'Número de estudiantes',

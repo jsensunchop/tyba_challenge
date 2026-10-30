@@ -39,8 +39,6 @@ class _UniversitiesScreenState extends ConsumerState<UniversitiesScreen> {
         ],
       ),
       body: universities.when(
-        // Show the spinner again when retrying after an error, so the tap on
-        // "Reintentar" has visible feedback.
         skipLoadingOnRefresh: false,
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => ErrorView(

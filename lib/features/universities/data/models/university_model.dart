@@ -10,8 +10,6 @@ class UniversityModel {
     required this.webPages,
   });
 
-  /// [id] comes from the caller because the JSON item has none
-  /// (see [University.id]).
   factory UniversityModel.fromJson(Map<String, dynamic> json, int id) {
     return UniversityModel(
       id: id,
@@ -41,8 +39,6 @@ class UniversityModel {
     );
   }
 
-  // The source data has two known artifacts: an escaped `&` and invisible
-  // zero-width spaces. These are the only ones present, so no generic decoder.
   static String _cleanName(String raw) {
     return raw.replaceAll('&amp;', '&').replaceAll('​', '');
   }

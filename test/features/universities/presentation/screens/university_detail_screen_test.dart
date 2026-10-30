@@ -17,7 +17,6 @@ const _university = University(
   webPages: ['http://www.marywood.edu'],
 );
 
-/// Returns the container so tests can assert on the provider state.
 Future<ProviderContainer> _pumpDetail(
   WidgetTester tester, {
   University university = _university,

@@ -15,8 +15,6 @@ class UniversitiesState {
   bool get hasMore => visibleCount < all.length;
 }
 
-/// The API returns every university in a single response, so pagination
-/// happens in memory: the notifier only decides how many items are visible.
 class UniversitiesNotifier extends AsyncNotifier<UniversitiesState> {
   static const pageSize = 20;
 
@@ -28,8 +26,6 @@ class UniversitiesNotifier extends AsyncNotifier<UniversitiesState> {
     return UniversitiesState(all: universities, visibleCount: pageSize);
   }
 
-  /// Synchronous because the data is already in memory: there is nothing to
-  /// wait for and nothing that can fail.
   void loadMore() {
     final current = state.value;
     if (current == null || !current.hasMore) return;
@@ -46,8 +42,5 @@ class UniversitiesNotifier extends AsyncNotifier<UniversitiesState> {
 final universitiesProvider =
     AsyncNotifierProvider<UniversitiesNotifier, UniversitiesState>(
       UniversitiesNotifier.new,
-      // Riverpod 3 retries failed providers automatically, which would keep the
-      // spinner up for about a minute while offline. The screen offers an
-      // explicit "Reintentar" button instead.
       retry: (_, _) => null,
     );

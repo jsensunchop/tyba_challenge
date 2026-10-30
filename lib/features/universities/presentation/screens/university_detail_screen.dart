@@ -7,8 +7,6 @@ import '../providers/university_custom_data_provider.dart';
 import '../widgets/students_form.dart';
 import '../widgets/university_image.dart';
 
-// Own enum instead of image_picker's ImageSource, so the screen doesn't
-// depend on the plugin; only ImagePickerService does.
 enum _ImageOrigin { camera, gallery }
 
 class UniversityDetailScreen extends ConsumerWidget {
@@ -25,7 +23,6 @@ class UniversityDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Detalle')),
-      // Scrollable so the form stays reachable with the keyboard open.
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -103,7 +100,6 @@ class UniversityDetailScreen extends ConsumerWidget {
     );
     if (origin == null) return;
 
-    // Read before awaiting: `ref` can't be used once the screen is gone.
     final picker = ref.read(imagePickerServiceProvider);
     final notifier = ref.read(universityCustomDataProvider.notifier);
 
@@ -114,7 +110,6 @@ class UniversityDetailScreen extends ConsumerWidget {
       if (path == null) return;
       notifier.setImage(university.id, path);
     } on Exception {
-      // Denied permission or no camera (e.g. iOS simulator).
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No se pudo obtener la imagen')),

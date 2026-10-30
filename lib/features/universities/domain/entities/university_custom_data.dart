@@ -1,5 +1,3 @@
-/// What the user adds to a university. Kept apart from `University`, which
-/// mirrors the API, so local edits never mix with remote data.
 class UniversityCustomData {
   const UniversityCustomData({this.imagePath, this.studentCount});
 
