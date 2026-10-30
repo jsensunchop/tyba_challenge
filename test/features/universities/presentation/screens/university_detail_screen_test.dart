@@ -165,17 +165,52 @@ void main() {
       expect(find.byIcon(Icons.check_circle), findsOneWidget);
     });
 
-    testWidgets('an invalid value does not show the success dialog', (
+    testWidgets('an invalid value is neither saved nor confirmed', (
       tester,
     ) async {
-      await _pumpDetail(tester);
+      final container = await _pumpDetail(tester);
 
       await tester.ensureVisible(find.text('Guardar'));
       await tester.enterText(find.byType(TextField), '0');
       await tester.tap(find.text('Guardar'));
       await tester.pumpAndSettle();
 
+      expect(find.text('Debe ser mayor que cero'), findsOneWidget);
       expect(find.byType(AlertDialog), findsNothing);
+      expect(container.read(universityCustomDataProvider), isEmpty);
+    });
+
+    testWidgets('the error message starts at the field left edge', (
+      tester,
+    ) async {
+      await _pumpDetail(tester);
+
+      await tester.ensureVisible(find.byType(TextField));
+      await tester.enterText(find.byType(TextField), '0');
+      await tester.pump();
+
+      final fieldLeft = tester.getTopLeft(find.byType(TextField)).dx;
+      final iconLeft = tester.getTopLeft(find.byIcon(Icons.error_outline)).dx;
+      final iconRight = tester.getTopRight(find.byIcon(Icons.error_outline)).dx;
+      final textLeft = tester
+          .getTopLeft(find.text('Debe ser mayor que cero'))
+          .dx;
+
+      expect(iconLeft, fieldLeft);
+      expect(textLeft, iconRight + 4);
+    });
+
+    testWidgets('the saved status starts at the field left edge', (
+      tester,
+    ) async {
+      await _pumpDetail(tester);
+
+      final fieldLeft = tester.getTopLeft(find.byType(TextField)).dx;
+      final iconLeft = tester
+          .getTopLeft(find.byIcon(Icons.warning_amber_rounded))
+          .dx;
+
+      expect(iconLeft, fieldLeft);
     });
   });
 
