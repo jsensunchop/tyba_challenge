@@ -83,8 +83,6 @@ class _UniversitiesScreenState extends ConsumerState<UniversitiesScreen> {
               onPressed: () => setState(() => _isGrid = !_isGrid),
             ),
           ],
-          // Always present with the same height, so the bar doesn't jump
-          // when the data arrives.
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(40),
             child: Padding(

@@ -9,8 +9,6 @@ abstract final class AppTheme {
   static ThemeData dark() => _build(Brightness.dark);
 
   static ThemeData _build(Brightness brightness) {
-    // Derived from the accent so the badge (tertiaryContainer) stays in the
-    // same orange family as the camera button (tertiary).
     final accent = ColorScheme.fromSeed(
       seedColor: _accent,
       brightness: brightness,

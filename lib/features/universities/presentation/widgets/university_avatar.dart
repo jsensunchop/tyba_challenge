@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/university.dart';
 import '../utils/formatters.dart';
 
-// Light backgrounds with dark text of the same hue read well in both light
-// and dark mode, so these are the only hardcoded colors in the UI.
 const _palette = [
   (background: Color(0xFFE1F5EE), foreground: Color(0xFF085041)),
   (background: Color(0xFFEEEDFE), foreground: Color(0xFF3C3489)),
@@ -32,8 +30,6 @@ class UniversityAvatar extends StatelessWidget {
 
     return Hero(
       tag: 'university-avatar-${university.id}',
-      // Hero flights render in the overlay, outside any Material, which would
-      // otherwise give the initials the debug "missing Material" text style.
       child: Material(
         type: MaterialType.transparency,
         child: ClipOval(

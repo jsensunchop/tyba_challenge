@@ -37,8 +37,6 @@ class UniversityGridCard extends StatelessWidget {
                 size: 64,
               ),
               const SizedBox(height: 12),
-              // Flexible so large text scales shrink the name instead of
-              // overflowing the fixed-height grid cell.
               Flexible(
                 child: Text(
                   university.name,
