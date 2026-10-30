@@ -6,9 +6,21 @@ número de estudiantes.
 
 ## Demo
 
-<!-- TODO: GIF del flujo lista → detalle → imagen y estudiantes → volver -->
+Flujo principal: la lista carga las universidades, se cambia a cuadrícula, se
+abre el detalle de una universidad, se le asigna una imagen y un número de
+estudiantes, y al volver la lista muestra el avatar y el badge actualizados.
 
-<!-- TODO: enlace al APK en Releases -->
+<p align="center">
+  <img src="docs/demo.gif" alt="Demo: lista, detalle, imagen y número de estudiantes" width="300">
+</p>
+
+Para instalarla en un dispositivo Android se puede generar el APK de release:
+
+```bash
+flutter build apk --release
+```
+
+El archivo queda en `build/app/outputs/flutter-apk/app-release.apk`.
 
 ## Funcionalidades
 
